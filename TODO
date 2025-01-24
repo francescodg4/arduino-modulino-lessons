@@ -1,0 +1,25 @@
+Reference implementation: https://github.com/arduino/arduino-modulino-mpy/tree/main/src/modulino
+Difference between print() and uart.write(): https://forum.micropython.org/viewtopic.php?t=10304
+Where do print statements send information from main.py?: https://forum.micropython.org/viewtopic.php?t=6253
+Getting a MicroPython REPL prompt: https://docs.micropython.org/en/latest/esp8266/tutorial/repl.html
+
+---------
+
+Forward UART messages to "Virtualization Program" (VP). On ESP8266 we can use only the UART0, but it is allocated to REPL.
+"Virtualization Program" might be able to provide a terminal on its side. The REPL on IDE would be disabled, but the user
+can still interact through the VP.
+
+In VP the user should be able to drag and drop Modulino modules, and address them as with the modulino library.
+
+Input:
+- Modulino Buttons: A three-button Modulino.
+- Modulino Distance: Measure distance to an object.
+- Modulino Movement: Measure acceleration and positioning.
+- Modulino Knob: A rotating knob with a button.
+- Modulino Thermo: Read surrounding temperature and humidity.
+
+Output:
+- Modulino Buzzer: A piezo speaker.
+- Modulino Pixels: Control RGB LEDs on the Modulino Pixels.
+
+Some modules should provide output, others should provide input (Buttons).
