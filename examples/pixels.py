@@ -7,8 +7,11 @@ You can use the ModulinoColor class to set predefined colors:
 
 Initial author: Sebastian Romero (s.romero@arduino.cc)
 """
+import sys
 
-from modulino import ModulinoPixels, ModulinoColor
+sys.path.append("micropython")
+
+from v_modulino import ModulinoPixels, ModulinoColor
 from time import sleep
 
 pixels = ModulinoPixels()

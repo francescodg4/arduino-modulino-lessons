@@ -1,78 +1,6 @@
 from .modulino import Modulino
-# from micropython import const
-
-# # TODO: Move to appropriate file
-# class Modulino:
-#   """
-#   Base class for all Modulino devices.
-#   """
-
-#   default_addresses: list[int] = []
-#   """
-#   A list of default addresses that the modulino can have.
-#   This list needs to be overridden derived classes.
-#   """
-
-#   convert_default_addresses: bool = True
-#   """
-#   Determines if the default addresses need to be converted from 8-bit to 7-bit.
-#   Addresses of modulinos without native I2C modules need to be converted.
-#   This class variable needs to be overridden in derived classes.
-#   """
-
-#   def __init__(self, i2c_bus = None, address: int = None, name: str = None):
-#     """
-#     Initializes the Modulino object with the given i2c bus and address.
-#     If the address is not provided, the device will try to auto discover it.
-#     If the address is provided, the device will check if it is connected to the bus.
-#     If the address is 8-bit, it will be converted to 7-bit.
-#     If no bus is provided, the default bus will be used if available.
-
-#     Parameters:
-#       i2c_bus (I2C): The I2C bus to use. If not provided, the default I2C bus will be used.
-#       address (int): The address of the device. If not provided, the device will try to auto discover it.
-#       name (str): The name of the device.
-#     """
-
-#     # if i2c_bus is None:
-#     #   self.i2c_bus = _I2CHelper.get_interface()
-#     # else:
-#     #   self.i2c_bus = i2c_bus
-
-#     self.name = name
-#     self.address = address
-
-#     if self.address is None:
-#       if len(self.default_addresses) == 0:
-#         raise RuntimeError(f"No default addresses defined for the {self.name} device.")
-
-#       if self.convert_default_addresses:
-#         # Need to convert the 8-bit address to 7-bit
-#         actual_addresses = list(map(lambda addr: addr >> 1, self.default_addresses))
-#         self.address = self.discover(actual_addresses)
-#       else:
-#         self.address = self.discover(self.default_addresses)
-
-#       if self.address is None:
-#         raise RuntimeError(f"Couldn't find the {self.name} device on the bus. Try resetting the board.")
-#     elif not self.connected:
-#       raise RuntimeError(f"Couldn't find a {self.name} device with address {hex(self.address)} on the bus. Try resetting the board.")
-
-#   def write(self, data_buffer: bytearray) -> bool:
-#     """
-#     Writes the given buffer to the i2c device.
-
-#     Parameters:
-#       data_buffer (bytearray): The data to be written to the device.
-
-#     Returns:
-#       bool: True if the data was written successfully, False otherwise.
-#     """
-#     print(f"write({self.address}, {data_buffer})")
-#     return True
 
 const = lambda x: x  # do nothing alias
-
 
 class ModulinoColor:
   """
@@ -257,4 +185,22 @@ class ModulinoPixels(Modulino):
     Applies the changes to the LEDs. This function needs to be called after any changes to the LEDs.
     Otherwise, the changes will not be visible.
     """
-    self.write(self.data)
+    values = memoryview(self.data).cast("I", shape=(NUM_LEDS,)).tolist()
+
+    color = lambda x: ((x >> 24) & 0xff, (x >> 16) & 0xff, (x >> 8) & 0xff)
+    brightness = lambda x: (((x & 0xff) ^ 0xe0) / 0x1f)
+
+    leds = [(color(value), brightness(value)) for value in values]
+
+    output = ['.'] * NUM_LEDS
+
+    for i, ((r, g, b), brightness) in enumerate(leds):
+        output[i] = f"\033[38;2;{r};{g};{b}m*\033[0m" if (brightness > 0.5) else "."
+
+        # TODO If colorsys is supported Micropython
+        # h, s, l = colorsys.rgb_to_hls(r, g, b)
+        # l *= brightness
+        # r, g, b = colorsys.hls_to_rgb(h, s, l)
+        # output[i] = f"\033[38;2;{int(r)};{int(g)};{int(b)}m*\033[0m" if (brightness > 0.05) else "."
+
+    print(''.join(output))
