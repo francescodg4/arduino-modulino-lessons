@@ -3,8 +3,7 @@ __author__ = "Francesco De Gioia"
 __license__ = "MPL 2.0"
 __maintainer__ = "Arduino"
 
-# # Import core classes and/or functions to expose them at the package level
-# from .modulino import Modulino
+# Import core classes and/or functions to expose them at the package level
 from .pixels import ModulinoPixels, ModulinoColor
 from .thermo import ModulinoThermo
 from .buzzer import ModulinoBuzzer
