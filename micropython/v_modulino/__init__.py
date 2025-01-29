@@ -7,7 +7,7 @@ __maintainer__ = "Arduino"
 # from .modulino import Modulino
 from .pixels import ModulinoPixels, ModulinoColor
 from .thermo import ModulinoThermo
-# from .buzzer import ModulinoBuzzer
+from .buzzer import ModulinoBuzzer
 from .buttons import ModulinoButtons
 # from .knob import ModulinoKnob
 from .movement import ModulinoMovement
