@@ -5,6 +5,7 @@ class Modulino:
 
     def write(self, data_buffer: bytearray) -> bool:
         print(f"write({data_buffer})")
+        return True
 
     def read(self, amount_of_bytes: int) -> bytes | None:
         # print(f"read({amount_of_bytes})")
